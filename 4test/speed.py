@@ -5,7 +5,7 @@ import numpy as np
 
 begin_time = time()
 
-a = np.load('../data/image_data.npy')
+a = np.load('../data/image_data_1000.npy')
 
 end_time = time()
 run_time = end_time - begin_time

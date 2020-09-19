@@ -4,15 +4,16 @@ from keras.models import Model
 import numpy as np
 from time import *
 import os
+import matplotlib.pyplot as plt
 '''
     get_train_data
     get_top3_match
     is_matched
     cacl_ROC
-    myplot
+    acc_loss_plot
 '''
 def get_train_data():
-    dataSet_num = 100 # 用于预测图片的数量
+    dataSet_num = 1000 # 用于预测图片的数量
     data_path ='C:/Users/11354/Desktop/Alderley dataset/FRAMESA/'
     images = [] # 保存原来图片
     features = [] # 保存VGG预测得到的特征
@@ -78,33 +79,22 @@ def is_matched(query_frame,predict_frame):
 
 
 
-def myplot():
-    import matplotlib as plt
-    #############################################    show   ###############################################
-    # 显示训练集和验证集的acc和loss曲线
-    # acc = history.history['sparse_categorical_accuracy']
-    # val_acc = history.history['val_sparse_categorical_accuracy']
-    # loss = history.history['loss']
-    # val_loss = history.history['val_loss']
+def loss_plot(history):
+    # 显示训练集和验证集的loss曲线
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
 
-    # plt.subplot(1, 2, 1)
-    # plt.plot(acc, label='Training Accuracy')
-    # plt.plot(val_acc, label='Validation Accuracy')
-    # plt.title('Training and Validation Accuracy')
-    # plt.legend()
-    #
-    # plt.subplot(1, 2, 2)
-    # plt.plot(loss, label='Training Loss')
-    # plt.plot(val_loss, label='Validation Loss')
-    # plt.title('Training and Validation Loss')
-    # plt.legend()
-    # plt.show()
+    plt.subplot(1, 2, 1)
+    plt.plot(loss, label='Training Loss')
+    plt.plot(val_loss, label='Validation Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.show()
+
 
 if __name__ == '__main__':
     begin_time = time()
-    #
-    # get_train_data()
-    #
-    # end_time = time()
-    # run_time = end_time - begin_time
-    # print('该循环程序运行时间：', run_time,'s')
+    get_train_data()
+    end_time = time()
+    run_time = end_time - begin_time
+    print('该循环程序运行时间：', run_time,'s')
