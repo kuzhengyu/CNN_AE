@@ -1,23 +1,22 @@
 import os
 import tensorflow as tf
-from tensorflow.python.keras.layers import Conv2D, Flatten, Dense
+from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D
 from tensorflow.python.keras import Model
 
 class Autoencoder(Model):
     def __init__(self):
         super(Autoencoder, self).__init__()
         self.encoder = tf.keras.Sequential([
-            # Flatten(),
-            # Dense(150528, activation='relu'),
-            # Dense(4096, activation='relu'),
-            # Dense(1024, activation='relu'),
-            # 卷积的样式还没确定好，用全连接太大了
-            # Conv2D(64, (5, 5), activation='relu', padding='same'),
-            # Conv2D(128, (4, 4), activation='relu', padding='same'),
-            # Conv2D(4, (3, 3), activation='relu', padding='same')
+            Conv2D(64, (5, 5), activation='relu', padding='same',input_shape=(224,224,3),strides=2),
+            MaxPooling2D((2, 2), padding='same'),
+            Conv2D(128, (4, 4), activation='relu', padding='same',strides=2),
+            MaxPooling2D((2, 2), padding='same'),
+            Conv2D(4, (3, 3), activation='relu', padding='same')
+            # 得到14*14*4=784的特征向量
         ])
         self.decoder = tf.keras.Sequential([
-            Dense(1024, activation='relu'),
+            Flatten(),
+            Dense(784, activation='relu'),
             Dense(2048, activation='relu'),
             Dense(4096, activation='relu'),
             # 还原成4096

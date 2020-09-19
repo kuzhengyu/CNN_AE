@@ -13,6 +13,7 @@ if __name__ == '__main__':
 
     # 使用ModelCheckpoint回调函数,在训练过程中,将最好的模型保存到filepath
     cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_save_path,
+                                                     monitor='val_accuracy',
                                                      save_weights_only=True,
                                                      save_best_only=True)
 
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     images = np.load('./data/image_data_100.npy') # 输入图片
     # print(images.shape,VGG_f.shape)
 
-    history = autoencoder.fit(images, VGG_f, batch_size=8, epochs=5,
+    history = autoencoder.fit(images, VGG_f, batch_size=8, epochs=5,validation_split=0.2,
                         callbacks=[cp_callback])
 
 
