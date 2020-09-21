@@ -2,11 +2,12 @@ import tensorflow as tf
 import numpy as np
 from keras.preprocessing.image import load_img, img_to_array
 
-encoder = tf.keras.models.load_model('./model/my_encoder_model.h5',compile=False)
-images = np.load('./data/image_data_1000.npy')
-label = load_img('C:/Users/11354/Desktop/Alderley dataset/FRAMESB/Image00398.jpg', target_size=(224, 224))
+encoder = tf.keras.models.load_model('../model/my_encoder_model.h5', compile=False)
+encoder.summary()
+images = np.load('../data/image_data_1000.npy')
+label = load_img('C:/Users/11354/Desktop/Alderley dataset/FRAMESB/Image00010.jpg', target_size=(224, 224))
 
-image = images[389]
+image = images[2]
 image =  np.expand_dims(image, axis=0)
 print(image.shape)
 
@@ -15,6 +16,8 @@ label = label / 255.0
 label =  np.expand_dims(label, axis=0)
 print(label.shape)
 
+
+# result = encoder.predict(image)
 
 result = encoder.predict(image).flatten()
 result2 = encoder.predict(label).flatten()
@@ -29,8 +32,8 @@ def embedding_distance(feature_1, feature_2):
     dist = np.linalg.norm(feature_1 - feature_2)
     return dist
 dis = embedding_distance(feature_1, feature_2)
-
 print('feature_1,feature_2的欧式距离为',dis)
+
 
 def cosim(x,y):
     a=np.sum(x*y.T)

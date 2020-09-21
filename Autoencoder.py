@@ -4,9 +4,9 @@ from tensorflow.python.keras import Model
 # 2.0
 def get_ae_model():
     input_img = Input(shape=(224, 224, 3))
-    x = Conv2D(64, (5, 5), activation='relu', padding='same')(input_img)
+    x = Conv2D(64, (5, 5), activation='relu', padding='same',strides=2)(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(128, (4, 4), activation='relu', padding='same')(x)
+    x = Conv2D(128, (4, 4), activation='relu', padding='same',strides=2)(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
     encoded = Conv2D(4, (3, 3), activation='relu', padding='same', name='encoder')(x)
 

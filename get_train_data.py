@@ -4,12 +4,9 @@ from keras.models import Model
 import numpy as np
 from time import *
 import os
-import matplotlib.pyplot as plt
-from sklearn.neighbors import NearestNeighbors
-
 
 def get_train_data():
-    dataSet_num = 10000 # 用于预测图片的数量
+    dataSet_num = 1000 # 用于预测图片的数量
     data_path ='C:/Users/11354/Desktop/Alderley dataset/FRAMESA/'
     images = [] # 保存原来图片
     features = [] # 保存VGG预测得到的特征
@@ -50,52 +47,9 @@ def get_train_data():
     np.save('./data/VGG_feature_'+str(dataSet_num)+'.npy',features)
     np.save('./data/image_data_'+str(dataSet_num)+'.npy',images)
 
-
-# fit KNN
-# 找到与查询图片最接近的前三张图片
-def get_top3_match(query_code,database_codes):
-
-    n_neigh = 3 # top3
-    nbrs = NearestNeighbors(n_neighbors=n_neigh).fit(database_codes)
-    distances, indices = nbrs.kneighbors(np.array(query_code))
-
-    # indices 下标+1 即图片编号，即第n帧图片
-    return distances,indices
-
-
-# 相差5帧之内均为匹配成功
-def is_matched(query_frame,predict_frame):
-    if(abs(query_frame-predict_frame)<5):
-        return True
-    else:
-        return False
-
-# 计算Precision-recall
-# def cacl_ROC():
-
-
-# 显示训练集和验证集的loss曲线
-def loss_plot(history):
-    loss = history.history['loss']
-    val_loss = history.history['val_loss']
-
-    plt.subplot(1, 2, 1)
-    plt.plot(loss, label='Training Loss')
-    plt.plot(val_loss, label='Validation Loss')
-    plt.title('Training and Validation Loss')
-    plt.legend()
-    plt.show()
-
-# 加载模型的权重
-def loadWeights(autoencoder,checkpoint_save_path):
-    if os.path.exists(checkpoint_save_path + '.index'):
-        print('-------------load the model-----------------')
-        autoencoder.load_weights(checkpoint_save_path).expect_partial()
-
-
 if __name__ == '__main__':
     begin_time = time()
     get_train_data()
     end_time = time()
     run_time = end_time - begin_time
-    print('该循环程序运行时间：', run_time,'s')
+    print('该循环程序运行时间：', run_time, 's')
