@@ -1,4 +1,3 @@
-import tensorflow as tf
 from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D,Input
 from tensorflow.python.keras import Model
 

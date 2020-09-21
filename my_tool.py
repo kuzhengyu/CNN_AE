@@ -1,4 +1,4 @@
-from keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
+from keras.applications.vgg16 import VGG16
 from keras.preprocessing.image import load_img, img_to_array
 from keras.models import Model
 import numpy as np
@@ -38,7 +38,6 @@ def get_train_data():
         image_data = np.expand_dims(image_data, axis=0)
 
         # 图片通过预测,得到特征向量
-        image_data = preprocess_input(image_data)
         feature = model.predict(image_data)
         # print(feature,image_data)
 

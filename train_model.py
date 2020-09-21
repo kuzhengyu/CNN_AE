@@ -1,6 +1,6 @@
 from Autoencoder import *
 from my_tool import *
-from sklearn.utils import shuffle
+import tensorflow as tf
 
 
 if __name__ == '__main__':
@@ -27,11 +27,12 @@ if __name__ == '__main__':
     VGG_f = np.load('./data/VGG_feature_'+str(dataSet_num)+'.npy')# VGG输出向量  y
 
     # 打散数据
-    x_train, y_train = shuffle(images, VGG_f, random_state=0)
+    # x_train, y_train = shuffle(images, VGG_f, random_state=0)
     # print(images.shape,VGG_f.shape)
 
-    history = autoencoder.fit(x_train, y_train, batch_size=32, epochs=2,
-                              validation_split=0.15,
+    history = autoencoder.fit(images, VGG_f, batch_size=64, epochs=3,
+                              validation_split=0.20,
+                              shuffle=True,
                               callbacks=[cp_callback])
 
     # 打印模型的概述信息，通过模型的概述信息知道模型的基本结构
