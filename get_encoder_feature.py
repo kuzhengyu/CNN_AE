@@ -1,16 +1,15 @@
 from keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 import tensorflow as tf
-from my_tool import *
 
 # 读取出白天的数据，经过encoder编码，得到一组特征向量，作为数据库
 # 将数据库的内容保存起来，用于图片匹配
 if __name__ == '__main__':
     data_path ='C:/Users/11354/Desktop/Alderley dataset/FRAMESB/'
-    dataSet_num = 1000
+    dataSet_num = 10
     images =[]
     # 加载encoder
-    encoder = tf.keras.models.load_model('./model/my_encoder_model.h5',compile=False)
+    encoder = tf.keras.models.load_model('./model/d_encoder_model.h5',compile=False)
 
     # 读取白天图片，进行预处理
     for x in range(dataSet_num):
@@ -26,10 +25,9 @@ if __name__ == '__main__':
 
     database = np.array(images)
 
-
     #数据库中所有图片进行特征提取，得到一组特征向量
     database_codes = []
-    for index in range(1000):
+    for index in range(dataSet_num):
         database_single =  np.expand_dims(database[index], axis=0)
         database_single_feature = encoder.predict(database_single)
         database_codes.append(database_single_feature)

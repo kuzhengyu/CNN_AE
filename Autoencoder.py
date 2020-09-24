@@ -1,4 +1,4 @@
-from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D,Input
+from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D,Input,Dropout
 from tensorflow.python.keras import Model
 
 # 2.0
@@ -8,11 +8,13 @@ def get_ae_model():
     x = MaxPooling2D((2, 2), padding='same')(x)
     x = Conv2D(128, (4, 4), activation='relu', padding='same',strides=2)(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    encoded = Conv2D(4, (3, 3), activation='relu', padding='same', name='encoder')(x)
+    encoded = Conv2D(8, (3, 3), activation='relu', padding='same', name='encoder')(x)
 
     x = Flatten()(encoded)
-    x = Dense(784, activation='relu')(x)
+    x = Dense(1568, activation='relu')(x)
+    x = Dropout(0.2)(x)
     x = Dense(2048, activation='relu')(x)
+    x = Dropout(0.3)(x)
     decoded = Dense(4096, activation='relu')(x)
 
     return Model(input_img, decoded)
