@@ -4,8 +4,10 @@ from keras.models import Model
 import numpy as np
 from time import *
 import os
+from sklearn.decomposition import PCA
 
 def get_VGG_f():
+    os.environ['CUDA_VISIBLE_DEVICES'] = "1,2"
     data_train_path ='./raw_data/Place/data_256/'
     dataSet_num =5000
     # 获取VGG 倒数第二个全连接层fc2的输出
@@ -13,10 +15,13 @@ def get_VGG_f():
     model = Model(inputs=base_model.input, outputs=base_model.get_layer('fc2').output)
 
     for initial in os.listdir(data_train_path) :
+        if(initial=='c'): #先处理目录'i'
+            break
         for place in os.listdir(data_train_path+'/'+initial):
             features = []  # 保存VGG预测得到的特征
             for x in range(dataSet_num):
-                if (not os.path.exists(data_train_path+'/'+initial+'/'+place+'/'+str(x+1).zfill(8)+'.jpg')):
+                # 确保有图片
+                if (not os.path.exists(data_train_path+'/'+initial+'/'+place+'/'+str(5000).zfill(8)+'.jpg')):
                     break
                 # 加载图片
                 image = load_img(data_train_path+'/'+initial+'/'+place+'/'+str(x+1).zfill(8)+'.jpg'
@@ -39,7 +44,14 @@ def get_VGG_f():
             if(len(features)!=0):
                 # 将数据转换成array形式，保存起来
                 features = np.array(features)
-                np.save(data_train_path+'/'+initial+'/'+place+'/'+str(dataSet_num)+'_VGG_feature.npy',features)
+
+                #PCA降维 25088太大了
+                # features = features.reshape(-1, 25088)
+                # pca = PCA(n_components=4096)
+                # features = pca.fit_transform(features)  # 5000*4096
+
+                # 保存
+                np.save(data_train_path+'/'+initial+'/'+place+'/'+str(dataSet_num)+'_block5_pool_VGG_feature.npy',features)
                 print(place+'is ok')
 
 
