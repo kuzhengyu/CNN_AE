@@ -1,23 +1,36 @@
 from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D,Input,Dropout
 from tensorflow.python.keras import Model
-
-# 2.0
+#2.1
 def get_ae_model():
     input_img = Input(shape=(224, 224, 3))
-    x = Conv2D(64, (5, 5), activation='relu', padding='same',strides=2)(input_img)
+    x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(128, (4, 4), activation='relu', padding='same',strides=2)(x)
+    x = Conv2D(256, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    encoded = Conv2D(8, (3, 3), activation='relu', padding='same', name='encoder')(x)
+    x = Conv2D(4, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
+    encoded = MaxPooling2D((2, 2), padding='same', name='encoder')(x)
 
     x = Flatten()(encoded)
-    x = Dense(1568, activation='relu')(x)
-    x = Dropout(0.2)(x)
-    x = Dense(2048, activation='relu')(x)
-    x = Dropout(0.3)(x)
+    x = Dense(3136, activation='relu')(x)
     decoded = Dense(4096, activation='relu')(x)
-
     return Model(input_img, decoded)
+
+
+
+# 2.0
+# def get_ae_model():
+#     input_img = Input(shape=(224, 224, 3))
+#     x = Conv2D(64, (5, 5), activation='relu', padding='same',strides=2)(input_img)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(128, (4, 4), activation='relu', padding='same',strides=2)(x)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     encoded = Conv2D(8, (3, 3), activation='relu', padding='same', name='encoder')(x)
+#
+#     x = Flatten()(encoded)
+#     x = Dense(1568, activation='relu')(x)
+#     x = Dense(2048, activation='relu')(x)
+#     decoded = Dense(4096, activation='relu')(x)
+    # return Model(input_img, decoded)
 
 
 
