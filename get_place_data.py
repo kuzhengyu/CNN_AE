@@ -8,12 +8,15 @@ import os
 def get_data():
     data_train_path ='./raw_data/Place/data_256/'
     dataSet_num =5000
-
+    f=0
     for initial in os.listdir(data_train_path) :
-        if(initial=='c'):# 先读取到i的部分
-            break
+        # if(initial=='c'):# 先读取到i的部分
+        #     break
+
+
         for place in os.listdir(data_train_path+'/'+initial):
             images = []
+            print(initial + '_' + place + 'is start')
             for x in range(dataSet_num):
                 if (not os.path.exists(data_train_path+'/'+initial+'/'+place+'/'+str(x+1).zfill(8)+'.jpg')):
                     break
@@ -34,7 +37,7 @@ def get_data():
                 # 将数据转换成array形式，保存起来
                 images = np.array(images)
                 np.save(data_train_path+'/'+initial+'/'+place+'/'+str(dataSet_num)+'_data.npy',images)
-                print(place+'is ok')
+                print(initial + '_' + place + 'is start')
 
 
 if __name__ == '__main__':

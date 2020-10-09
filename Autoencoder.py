@@ -1,19 +1,65 @@
 from tensorflow.python.keras.layers import Conv2D, Flatten, Dense,MaxPooling2D,Input,Dropout
-from tensorflow.python.keras import Model
-#2.1
+from tensorflow.python.keras import Model,regularizers
+#2.3
 def get_ae_model():
     input_img = Input(shape=(224, 224, 3))
-    x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(input_img)
-    x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(256, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
-    x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(4, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
-    encoded = MaxPooling2D((2, 2), padding='same', name='encoder')(x)
+    x = Conv2D(64, (5, 5), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+               kernel_initializer='uniform')(input_img)
+    x = MaxPooling2D((3, 3), strides=2, padding='same')(x)
+    x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+               kernel_initializer='uniform')(x)
+    x = MaxPooling2D((3, 3),strides=2, padding='same')(x)
+    x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+               kernel_initializer='uniform')(x)
+    x = MaxPooling2D((3, 3),strides=2, padding='same')(x)
+    x = Conv2D(256, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+               kernel_initializer='uniform')(x)
+    encoded = Conv2D(4, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_regularizer=regularizers.l2(),
+                              kernel_initializer='uniform',name='encoder')(x)
+
 
     x = Flatten()(encoded)
     x = Dense(3136, activation='relu')(x)
     decoded = Dense(4096, activation='relu')(x)
     return Model(input_img, decoded)
+
+
+#2.2
+# def get_ae_model():
+#     input_img = Input(shape=(224, 224, 3))
+#     x = Conv2D(64, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+#                kernel_initializer='uniform')(input_img)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+#                kernel_initializer='uniform')(x)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(256, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+#                kernel_initializer='uniform')(x)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(16, (3, 3), strides=(1, 1), padding='same', activation='relu',kernel_regularizer=regularizers.l2(),
+#                kernel_initializer='uniform')(x)
+#     encoded = MaxPooling2D((2, 2), padding='same', name='encoder')(x)
+#
+#     x = Flatten()(encoded)
+#     x = Dense(3136, activation='relu')(x)
+#     x = Dropout(0.5)(x)
+#     decoded = Dense(4096, activation='relu')(x)
+#     return Model(input_img, decoded)
+
+#2.1
+# def get_ae_model():
+#     input_img = Input(shape=(224, 224, 3))
+#     x = Conv2D(128, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(input_img)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(256, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
+#     x = MaxPooling2D((2, 2), padding='same')(x)
+#     x = Conv2D(4, (3, 3), strides=(1, 1), padding='same', activation='relu', kernel_initializer='uniform')(x)
+#     encoded = MaxPooling2D((2, 2), padding='same', name='encoder')(x)
+#
+#     x = Flatten()(encoded)
+#     x = Dense(3136, activation='relu')(x)
+#     decoded = Dense(4096, activation='relu')(x)
+#     return Model(input_img, decoded)
 
 
 

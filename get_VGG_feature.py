@@ -7,16 +7,19 @@ import os
 from sklearn.decomposition import PCA
 
 def get_VGG_f():
-    os.environ['CUDA_VISIBLE_DEVICES'] = "1,2"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "0,1,2,3"
     data_train_path ='./raw_data/Place/data_256/'
     dataSet_num =5000
+    f=0
     # 获取VGG 倒数第二个全连接层fc2的输出
     base_model = VGG16(include_top=True, weights='imagenet')
     model = Model(inputs=base_model.input, outputs=base_model.get_layer('fc2').output)
 
     for initial in os.listdir(data_train_path) :
-        if(initial=='c'): #先处理目录'i'
-            break
+        # if (initial != 'f' and f == 0):  # 从f到h
+        #     continue
+        # else:
+        #     f = f + 1
         for place in os.listdir(data_train_path+'/'+initial):
             features = []  # 保存VGG预测得到的特征
             for x in range(dataSet_num):
@@ -51,7 +54,7 @@ def get_VGG_f():
                 # features = pca.fit_transform(features)  # 5000*4096
 
                 # 保存
-                np.save(data_train_path+'/'+initial+'/'+place+'/'+str(dataSet_num)+'_block5_pool_VGG_feature.npy',features)
+                np.save(data_train_path+'/'+initial+'/'+place+'/'+str(dataSet_num)+'_VGG_feature.npy',features)
                 print(place+'is ok')
 
 

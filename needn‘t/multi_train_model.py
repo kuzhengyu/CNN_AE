@@ -6,6 +6,8 @@ from time import *
 from matplotlib import pyplot as plt
 from tensorflow.python.keras.utils import multi_gpu_model
 from tensorflow.keras import optimizers
+from data_generator import DataGenerator
+from tensorflow.python.keras import backend as K
 
 def acc_loss_plot(history):
     loss = history.history['loss']
@@ -30,11 +32,12 @@ class ParallelModelCheckpoint(tf.keras.callbacks.ModelCheckpoint):
         super(ParallelModelCheckpoint,self).set_model(self.single_model)
 
 def model_config():
+    os.environ['CUDA_VISIBLE_DEVICES'] = "1,2"
     checkpoint_save_path = "./checkpoint/{epoch:03d}_.h5"
     autoencoder = get_ae_model()
     # 若有已经训练的权重,则读取权重,继续训练
     # 可行！
-    if os.path.exists('./checkpoint/{002_.h5' ):
+    if os.path.exists('./checkpoint/002_.h5' ):
         autoencoder.load_weights('./checkpoint/002_.h5')
 
     paralle_model = multi_gpu_model(autoencoder, gpus=2)
@@ -45,16 +48,16 @@ def model_config():
     # 使用ModelCheckpoint回调函数,在训练过程中,将最好的模型保存到filepath
     cp_callback = ParallelModelCheckpoint(autoencoder, filepath=checkpoint_save_path)
 
-    return autoencoder,paralle_model,cp_callback
+    return paralle_model,cp_callback
 
 def train_model():
-    os.environ['CUDA_VISIBLE_DEVICES'] = "1,2"
-    data_train_path = './raw_data/Place/data_256/'
 
+    data_train_path = './raw_data/Place/data_256/'
+    os.environ['CUDA_VISIBLE_DEVICES'] = "1,2"
 
 # ============================================train======================================
     dataSet_num = 5000
-    history=[]
+    autoencoder=[]
     count =0# 第几个场景
     test =0
     for initial in os.listdir(data_train_path):# [1:]已经训练m 从d开始
@@ -79,13 +82,20 @@ def train_model():
                 x_vaild = images[4000:]
                 y_vaild = VGG_f[4000:]
 
-                autoencoder ,paralle_model ,cp_callback = model_config()
+                training_generator = DataGenerator(x_train, y_train)
 
-                paralle_model.fit(x_train, y_train, batch_size=64, epochs=2,
+                paralle_model ,cp_callback = model_config()
+
+                # paralle_model.fit(x_train, y_train, batch_size=64, epochs=2,
+                #                           validation_data=(x_vaild, y_vaild),
+                #                           shuffle=True,
+                #                           callbacks=[cp_callback])
+                paralle_model.fit_generator(training_generator, epochs=2, max_queue_size=5, workers=1,
+                                          steps_per_epoch=64,use_multiprocessing=True,
                                           validation_data=(x_vaild, y_vaild),
-                                          shuffle=True,
                                           callbacks=[cp_callback])
                 print( 'No.'+str(count)+'_'+initial +'_'+ place +'is ok!')
+                K.clear_session()
                 # acc_loss_plot(history)
                 # break #test 只跑一个场景
 
