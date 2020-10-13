@@ -6,9 +6,7 @@ from keras.applications.vgg16 import  preprocess_input
 
 # 读取出白天B的数据，经过encoder编码，得到一组特征向量，作为数据库
 # 将数据库的内容保存起来，用于图片匹配
-def get_encoder_feature(data_path,encoder_path,model_type,data_range):
-
-
+def get_one_encoder_feature(data_path,encoder_path,model_type,data_range,day_feature_path):
     images =[]
     # 加载encoder
     encoder = tf.keras.models.load_model(encoder_path,compile=False)
@@ -33,4 +31,9 @@ def get_encoder_feature(data_path,encoder_path,model_type,data_range):
 
     database_codes = np.array(database_codes)
     # 保存特征向量
-    np.save('./feature/'+model_type+'_B_'+str(data_range[0])+'_'+str(data_range[1])+'.npy' ,database_codes)
+    np.save(day_feature_path ,database_codes)
+
+def get_encoder_feature(seqA_path,seqB_path,encoder_path,model_type,seqA_data_range,seqB_data_range,seqA_feature_path,seqB_feature_path):
+    get_one_encoder_feature(seqA_path, encoder_path, model_type, seqA_data_range,seqA_feature_path)
+    get_one_encoder_feature(seqB_path, encoder_path, model_type, seqB_data_range, seqB_feature_path)
+
